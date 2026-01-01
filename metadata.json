@@ -1,0 +1,7 @@
+{
+  "name": "VisionLab: Interactive Image Processing",
+  "description": "A real-time, interactive educational tool for learning computer vision concepts, featuring live kernel convolution, pixel probing, and matrix visualization.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
