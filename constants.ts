@@ -78,3 +78,32 @@ export const KERNELS: Record<string, Kernel> = {
 export const INITIAL_CUSTOM_KERNEL = [0, 0, 0, 0, 1, 0, 0, 0, 0];
 export const PROBE_SIZE = 10;
 export const SAMPLE_IMAGE_URL = "https://picsum.photos/800/600";
+
+// NEW Phase 4 Constants
+export const DEFAULT_MOTION_THRESHOLD = 0.05; // 0.0 - 1.0 (normalized pixel difference)
+export const MOTION_HEATMAP_FRAGMENT = `
+precision mediump float;
+uniform sampler2D u_image;          // Current texture in pipeline (output of previous filter)
+uniform sampler2D u_prevRawFrame;   // Raw input frame from the previous cycle
+uniform vec2 u_resolution;
+uniform float u_motionThreshold;
+varying vec2 v_texCoord;
+
+void main() {
+  vec4 currentFilteredPx = texture2D(u_image, v_texCoord); // The image as it stands in the pipeline
+  vec4 prevRawPx = texture2D(u_prevRawFrame, v_texCoord);   // The raw image from last frame
+
+  // Calculate difference in grayscale for robustness
+  float currentGray = dot(currentFilteredPx.rgb, vec3(0.299, 0.587, 0.114));
+  float prevGray = dot(prevRawPx.rgb, vec3(0.299, 0.587, 0.114));
+
+  float diff = abs(currentGray - prevGray);
+  
+  if (diff > u_motionThreshold) {
+    // Mix with neon green to highlight motion on top of the current filtered image
+    gl_FragColor = mix(currentFilteredPx, vec4(0.2, 1.0, 0.4, 0.7), 0.5); // 50% blend with semi-transparent green
+  } else {
+    gl_FragColor = currentFilteredPx; // No motion, just pass through the current filtered image
+  }
+}
+`;

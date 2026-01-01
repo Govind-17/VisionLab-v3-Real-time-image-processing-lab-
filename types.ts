@@ -65,6 +65,7 @@ export enum FilterType {
   BIT_PLANE = 'BIT_PLANE',
   COLOR_ADJUST = 'COLOR_ADJUST',
   CUSTOM_GLSL = 'CUSTOM_GLSL',
+  MOTION_HEATMAP = 'MOTION_HEATMAP', // NEW Phase 4
 }
 
 export interface FilterParams {
@@ -82,6 +83,9 @@ export interface FilterParams {
   // GLSL
   customSource?: string;
 
+  // Motion Heatmap
+  motionThreshold?: number; // NEW Phase 4
+
   // Generic
   active?: boolean;
 }
@@ -92,4 +96,29 @@ export interface FilterNode {
   type: FilterType;
   params: FilterParams;
   expanded?: boolean; // UI State
+}
+
+// --- PHASE 4: TensorFlow.js Detection Types ---
+export interface DetectedObject {
+  bbox: [number, number, number, number]; // [x, y, width, height]
+  class: string;
+  score: number;
+}
+
+export interface FaceLandmarkPoint {
+  x: number;
+  y: number;
+  z: number;
+}
+
+// Simplified FaceMeshResult for rendering, as the TF model returns more complex structure
+export interface FaceMeshResult {
+  faceContours: {
+    lips: FaceLandmarkPoint[];
+    leftEye: FaceLandmarkPoint[];
+    rightEye: FaceLandmarkPoint[];
+    leftEyebrow: FaceLandmarkPoint[];
+    rightEyebrow: FaceLandmarkPoint[];
+    faceOval: FaceLandmarkPoint[];
+  };
 }

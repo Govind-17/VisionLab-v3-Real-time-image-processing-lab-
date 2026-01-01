@@ -114,7 +114,7 @@ void main() {
 export const DEFAULT_CUSTOM_SHADER = `precision mediump float;
 uniform sampler2D u_image;
 uniform vec2 u_resolution;
-uniform float u_time;
+uniform float u_time; // Added u_time for consistency with WebGLEngine
 varying vec2 v_texCoord;
 
 void main() {
